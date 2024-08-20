@@ -4,6 +4,7 @@ import { timeAgo } from './timeago';
 import { TagData } from './utils/tag';
 import { matchNone } from './query/boolean';
 import { parseSearch } from './match_query';
+import { assertNotNull } from './utils/assert';
 
 /**
  * Store a tag locally, marking the retrieval time
@@ -13,7 +14,7 @@ function persistTag(tagData: TagData) {
     ...tagData,
     fetchedAt: new Date().getTime() / 1000,
   };
-  
+
   store.set(`bor_tags_${tagData.id}`, persistData);
 }
 
@@ -28,25 +29,6 @@ function clearTags() {
       store.remove(key);
     }
   });
-}
-
-/**
- * Returns a single tag, or a dummy tag object if we don't know about it yet
- */
-function getTag(tagId: number) : TagData {
-  const stored = store.get<TagData>(`bor_tags_${tagId}`);
-
-  if (stored !== null) {
-    return stored;
-  }
-
-  return {
-    id: tagId,
-    name: '(unknown tag)',
-    images: 0,
-    spoiler_image_uri: null,
-    fetchedAt: null,
-  };
 }
 
 /**
@@ -87,6 +69,25 @@ function verifyTagsVersion(latest: number) {
   }
 }
 
+/**
+ * Returns a single tag, or a dummy tag object if we don't know about it yet
+ */
+export function getTag(tagId: number) : TagData {
+  const stored = store.get<TagData>(`bor_tags_${tagId}`);
+
+  if (stored !== null) {
+    return stored;
+  }
+
+  return {
+    id: tagId,
+    name: '(unknown tag)',
+    images: 0,
+    spoiler_image_uri: null,
+    fetchedAt: null,
+  };
+}
+
 function initializeFilters() {
   const tags = window.booru.spoileredTagList.concat(window.booru.hiddenTagList)
                 .filter((a, b, c) => c.indexOf(a) === b);
@@ -103,8 +104,8 @@ function unmarshal(data: unknown) {
   }
 }
 
-function loadBooruData() {
-  const booruData = $<HTMLElement>('.js-datastore')!.dataset;
+export function loadBooruData() {
+  const booruData = assertNotNull($<HTMLElement>('.js-datastore')).dataset;
 
   if (booruData) {
     // Assign all elements to booru because lazy
@@ -120,7 +121,7 @@ function loadBooruData() {
   initializeFilters();
 
   // CSRF
-  window.booru.csrfToken = $<HTMLMetaElement>('meta[name="csrf-token"]')!.content;
+  window.booru.csrfToken = assertNotNull($<HTMLMetaElement>('meta[name="csrf-token"]')).content;
 }
 
 // These are just default values to make sure nothing's null or undefined that shouldn't be.
@@ -141,9 +142,5 @@ window.booru = {
   tagsVersion: 0,
   interactions: [],
   hideStaffTools: 'false',
-  galleryImages: undefined,
-  apiEndpoint: '/api/v2/'
+  galleryImages: undefined
 };
-
-
-export { getTag, loadBooruData };

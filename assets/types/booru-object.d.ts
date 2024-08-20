@@ -74,11 +74,6 @@ interface BooruObject {
    */
   galleryImages?: number[];
   /**
-   * Path to the root API endpoint
-   */
-  apiEndpoint: string;
-
-  /**
    * Used for lazy assignment of properties to the BooruObject.
    */
   [index: string]: unknown;
