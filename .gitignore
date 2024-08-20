@@ -61,3 +61,7 @@ npm-debug.log
 
 # Vitest coverage
 /assets/coverage
+
+# Mac OS
+.DS_Store
+
