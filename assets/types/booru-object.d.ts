@@ -73,6 +73,15 @@ interface BooruObject {
    * List of image IDs in the current gallery.
    */
   galleryImages?: number[];
+  /**
+   * Path to the root API endpoint
+   */
+  apiEndpoint: string;
+
+  /**
+   * Used for lazy assignment of properties to the BooruObject.
+   */
+  [index: string]: unknown;
 }
 
 declare global {

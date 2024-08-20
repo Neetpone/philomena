@@ -71,5 +71,3 @@ export function setupTimestamps() {
   timeAgo(document.getElementsByTagName('time'));
   window.setTimeout(setupTimestamps, 60000);
 }
-
-window.booru.timeAgo = timeAgo;
